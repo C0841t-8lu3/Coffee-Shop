@@ -1,0 +1,22 @@
+/* Base styles */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f7f3ee;
+    color: #3e2723;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #6d4c41;
+    color: #fff;
+    padding: 1.5rem 0;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+nav {
+    background-color: #a1887f;
+    padding: 0.5rem 0;
+    text-align: center;
+}
