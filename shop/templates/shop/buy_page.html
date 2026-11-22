@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order {{ coffee.name }} | The Coffee Bar{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 3rem; padding-bottom: 5rem;">
+    <!-- Page Header -->
+    <div class="section-header" style="margin-bottom: 2rem;">
+        <span class="section-tag">Express Checkout</span>
+        <h1 class="section-title">Customize & Place Your Order</h1>
+        <p class="section-desc">Our barista starts pulling shots the moment your order is confirmed.</p>
+    </div>
+
+    <div class="detail-grid" style="align-items: start;">
+        <!-- Left Column: Item Overview Card -->
+        <div style="background: var(--surface); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); position: sticky; top: 100px;">
+            <div style="border-radius: var(--radius-md); overflow: hidden; height: 260px; margin-bottom: 1.5rem; position: relative;">
+                <img src="{{ coffee.display_image }}" alt="{{ coffee.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                <span class="badge-pill badge-featured" style="position: absolute; top: 12px; left: 12px;">★ {{ coffee.roast_level }}</span>
+            </div>
+
+            <span class="card-category">{{ coffee.category.name|default:"Handcrafted Brew" }}</span>
+            <h2 style="font-family: var(--font-heading); color: var(--primary); font-size: 1.6rem; margin-bottom: 0.5rem;">
+                {{ coffee.name }}
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                {{ coffee.short_description|default:coffee.description }}
+            </p>
+
+            <div style="background: var(--cream); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Base Price</span>
+                    <strong id="dynamicBasePrice" data-base-price="{{ coffee.price }}" style="font-family: var(--font-heading); font-size: 1.4rem; color: var(--primary);">
+                        ${{ coffee.price }}
+                    </strong>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.8rem; color: var(--accent); font-weight: 700; display: block;">Calculated Total</span>
+                    <strong id="dynamicTotalPrice" style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--accent);">
+                        ${{ coffee.price }}
+                    </strong>
+                </div>
+            </div>
+
+            {% if all_coffees %}
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                <label class="form-label" style="font-size: 0.85rem;">Switch Coffee:</label>
+                <select class="form-select" onchange="if(this.value) window.location.href='/order/' + this.value + '/';">
+                    {% for c in all_coffees %}
+                    <option value="{{ c.pk }}" {% if c.pk == coffee.pk %}selected{% endif %}>
+                        {{ c.name }} (${{ c.price }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Customizer & Customer Details Form -->
+        <div style="background: var(--surface); padding: 2.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-md);">
+            <form method="post" action="{% url 'order' coffee.pk %}">
+                {% csrf_token %}
+
+                <h3 style="font-family: var(--font-heading); font-size: 1.35rem; color: var(--primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>1.</span> Drink Customization
+                </h3>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Cup Size</label>
+                        {{ form.size }}
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Milk / Creamer</label>
+                        {{ form.milk }}
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Sweetness Level</label>
+                        {{ form.sweetness }}
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Quantity</label>
+                        <div class="quantity-control" style="width: 100%; justify-content: space-between;">
+                            <button type="button" class="qty-btn" id="qtyMinus">−</button>
+                            {{ form.quantity }}
+                            <button type="button" class="qty-btn" id="qtyPlus">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="font-family: var(--font-heading); font-size: 1.35rem; color: var(--primary); margin-bottom: 1.25rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem;">
+                    <span>2.</span> Pickup & Contact Information
+                </h3>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Your Name *</label>
+                        {{ form.customer_name }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        {{ form.customer_email }}
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Phone Number (Optional)</label>
+                        {{ form.customer_phone }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Pickup Method</label>
+                        {{ form.pickup_type }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Target Ready Time</label>
+                    {{ form.pickup_time }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Special Preparation Notes</label>
+                    {{ form.notes }}
+                </div>
+
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
+                        ☕ Confirm & Send Order to Barista
+                    </button>
+                    <p style="text-align: center; color: var(--text-light); font-size: 0.82rem; margin-top: 0.75rem;">
+                        No upfront credit card required for express pickup orders.
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

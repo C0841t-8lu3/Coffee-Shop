@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed #{{ order.id }} | The Coffee Bar{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 3rem; padding-bottom: 5rem;">
+    <div class="order-card">
+        <div class="order-header">
+            <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem;">🎉</span>
+            <h1 style="font-family: var(--font-heading); font-size: 2.2rem; margin-bottom: 0.5rem;">
+                Order Placed Successfully!
+            </h1>
+            <p style="opacity: 0.9; font-size: 1rem;">
+                Order #{{ order.id }} • Estimated pickup in <strong>{{ order.pickup_time }}</strong>
+            </p>
+        </div>
+
+        <div class="order-body">
+            <!-- Stepper Progress Tracker -->
+            <div class="stepper" id="liveOrderTracker">
+                <div class="step-node completed">
+                    <div class="step-circle">✓</div>
+                    <span class="step-label">Received</span>
+                </div>
+                <div class="step-node active">
+                    <div class="step-circle">☕</div>
+                    <span class="step-label">Brewing</span>
+                </div>
+                <div class="step-node">
+                    <div class="step-circle">✨</div>
+                    <span class="step-label">Quality Check</span>
+                </div>
+                <div class="step-node">
+                    <div class="step-circle">🛍️</div>
+                    <span class="step-label">Ready</span>
+                </div>
+            </div>
+
+            <!-- Customer & Pickup Info -->
+            <div style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 2rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Guest Name</span>
+                        <strong style="color: var(--primary);">{{ order.customer_name }}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Pickup Type</span>
+                        <strong style="color: var(--primary);">{{ order.get_pickup_type_display }}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Contact Email</span>
+                        <strong style="color: var(--primary);">{{ order.customer_email }}</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Status</span>
+                        <span id="orderStatusBadge" style="background: #0284c7; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-full);">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+
+                {% if order.notes %}
+                <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--border);">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Special Instructions:</span>
+                    <span style="font-size: 0.9rem; color: var(--text); font-style: italic;">"{{ order.notes }}"</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Itemized Receipt -->
+            <h3 style="font-family: var(--font-heading); color: var(--primary); font-size: 1.25rem; margin-bottom: 1rem;">
+                Order Summary
+            </h3>
+            
+            <div style="border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 2rem;">
+                {% for item in order.items.all %}
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem; border-bottom: 1px solid var(--border); background: var(--surface);">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <img src="{{ item.coffee.display_image }}" alt="{{ item.coffee.name }}" style="width: 50px; height: 50px; border-radius: var(--radius-sm); object-fit: cover;">
+                        <div>
+                            <strong style="display: block; color: var(--primary); font-size: 1.05rem;">
+                                {{ item.quantity }}x {{ item.coffee.name }}
+                            </strong>
+                            <span style="font-size: 0.82rem; color: var(--text-muted);">
+                                {{ item.get_size_display }} • {{ item.get_milk_display }} • {{ item.sweetness }} Sweetness
+                            </span>
+                        </div>
+                    </div>
+                    <strong style="color: var(--primary); font-size: 1.1rem;">
+                        ${{ item.subtotal }}
+                    </strong>
+                </div>
+                {% endfor %}
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; background: var(--surface-subtle);">
+                    <strong style="font-size: 1.1rem; color: var(--primary);">Total Amount Due:</strong>
+                    <strong style="font-size: 1.5rem; color: var(--accent); font-family: var(--font-heading);">
+                        ${{ order.total_amount }}
+                    </strong>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="{% url 'menu' %}" class="btn btn-primary" style="flex: 1;">Order Something Else</a>
+                <a href="{% url 'home' %}" class="btn btn-secondary" style="flex: 1;">Return to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

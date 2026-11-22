@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Log In | The Coffee Bar{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="brand-icon" style="margin: 0 auto 1rem; width: 48px; height: 48px; font-size: 1.5rem;">☕</div>
+            <h2>Welcome Back</h2>
+            <p>Log in to track your artisan orders and perks</p>
+        </div>
+
+        {% if form.errors %}
+        <div class="alert alert-error" style="margin-bottom: 1.5rem; font-size: 0.88rem;">
+            Please enter a correct username and password.
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+                    <label class="form-label" for="{{ form.password.id_for_label }}" style="margin-bottom: 0;">Password</label>
+                </div>
+                {{ form.password }}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">
+                Sign In to Account
+            </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--cream); border-radius: var(--radius-sm); border: 1px dashed var(--border); font-size: 0.82rem; color: var(--text-muted); text-align: center;">
+            <strong>Demo Account:</strong> <code>barista</code> &bull; Password: <code>BaristaPass123!</code>
+        </div>
+
+        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
+            Don't have an account? <a href="{% url 'signup' %}" style="color: var(--accent); font-weight: 700;">Create one here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

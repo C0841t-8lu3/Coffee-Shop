@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}The Coffee Bar | Handcrafted Artisan Coffee & Micro-Roastery{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>✨ Freshly Roasted Daily</span>
+                </div>
+                <h1 class="hero-title">
+                    Exceptional coffee, <span>crafted</span> with passion.
+                </h1>
+                <p class="hero-subtitle">
+                    Experience small-batch specialty coffee sourced from single-estate growers across Ethiopia, Colombia, and Sumatra. Handcrafted by dedicated baristas for the purest flavor in every cup.
+                </p>
+                <div class="hero-cta">
+                    <a href="{% url 'menu' %}" class="btn btn-primary btn-lg">Explore Menu</a>
+                    <a href="{% url 'buy' %}" class="btn btn-secondary btn-lg">Order Online</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h3>100%</h3>
+                        <p>Arabica & Organic</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>15+</h3>
+                        <p>Single Origin Beans</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>4.9★</h3>
+                        <p>Over 2,400 Reviews</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="hero-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80" alt="Barista preparing artisan latte">
+                </div>
+                <div class="floating-pill">
+                    <div class="floating-icon">☕</div>
+                    <div class="floating-text">
+                        <strong>Signature Brew</strong>
+                        <span>Velvet Spanish Cortado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Category Filter Pills -->
+<section style="padding: 1.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface);">
+    <div class="container">
+        <div class="category-bar">
+            <a href="{% url 'menu' %}" class="category-chip active">
+                <span>🔥</span> All Varieties
+            </a>
+            {% for cat in categories %}
+            <a href="{% url 'menu' %}?category={{ cat.slug }}" class="category-chip">
+                <span>{{ cat.icon }}</span> {{ cat.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Coffees Section -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Barista Curations</span>
+            <h2 class="section-title">Signature Coffee Creations</h2>
+            <p class="section-desc">Each cup is meticulously weighed, ground on demand, and brewed to reveal its unique origin profile.</p>
+        </div>
+
+        <div class="coffee-grid">
+            {% for coffee in featured_coffees %}
+            <div class="coffee-card">
+                <div class="coffee-card-media">
+                    <img src="{{ coffee.display_image }}" alt="{{ coffee.name }}" class="coffee-card-img" loading="lazy">
+                    <span class="badge-pill badge-featured">★ Featured</span>
+                    <span class="rating-badge">★ {{ coffee.rating }}</span>
+                </div>
+                <div class="coffee-card-body">
+                    {% if coffee.category %}
+                    <span class="card-category">{{ coffee.category.name }}</span>
+                    {% endif %}
+                    <h3 class="card-title">
+                        <a href="{% url 'coffee_detail' coffee.slug %}">{{ coffee.name }}</a>
+                    </h3>
+                    <p class="card-desc">{{ coffee.short_description|default:coffee.description }}</p>
+                    
+                    <div class="card-meta">
+                        <span class="card-meta-item">🌱 {{ coffee.origin }}</span>
+                        <span class="card-meta-item">🔥 {{ coffee.roast_level }}</span>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="card-price">
+                            ${{ coffee.price }}
+                        </div>
+                        <a href="{% url 'order' coffee.pk %}" class="btn btn-primary btn-sm">Order Now</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No featured coffees yet. Check back soon!</p>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: 3.5rem;">
+            <a href="{% url 'menu' %}" class="btn btn-dark btn-lg">Browse Complete Catalog ({{ total_varieties }} Items) →</a>
+        </div>
+    </div>
+</section>
+
+<!-- Craftsmanship / Features Section -->
+<section class="section section-subtle" id="about">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">The Craft & Heritage</span>
+            <h2 class="section-title">Why Coffee Lovers Choose Us</h2>
+            <p class="section-desc">We obsess over every variable: water TDS levels, burr alignment, roast profiling, and temperature curves.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="feature-icon-wrapper">🌍</div>
+                <h4>Ethical Direct Trade</h4>
+                <p>We work directly with smallholder coffee farmers, paying up to 140% above fair-trade minimums to support regenerative agriculture.</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon-wrapper">🔥</div>
+                <h4>Micro-Batch Roasting</h4>
+                <p>Roasted weekly in small 12kg batches on our vintage cast-iron drum roaster to capture delicate peak aroma and terroir.</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon-wrapper">🥛</div>
+                <h4>Artisan Plant Milks</h4>
+                <p>Partnering with oat, almond, and whole-milk creameries formulated specifically for barista micro-foam and latte art.</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon-wrapper">⚡</div>
+                <h4>Zero Wait Pickup</h4>
+                <p>Order online ahead of time. Your drink will be freshly pulled and waiting at the express counter when you step in.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Customer Reviews Section -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Community Love</span>
+            <h2 class="section-title">What Our Guests Say</h2>
+            <p class="section-desc">Join thousands of daily coffee purists, digital nomads, and morning commuters.</p>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-quote">
+                    "The Salted Caramel Nitro Cold Brew is completely out of this world. Velvety, smooth, and zero bitter aftertaste. Hands down the best coffee in the city."
+                </p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Elena Rostova" class="author-avatar">
+                    <div class="author-info">
+                        <h5>Elena Rostova</h5>
+                        <span>Architect & Regular Customer</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-quote">
+                    "As someone who usually drinks espresso straight, their single-origin Ethiopian Yirgacheffe pour-over blew me away with its floral jasmine notes. Super fast pickup too!"
+                </p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" alt="Marcus Thorne" class="author-avatar">
+                    <div class="author-info">
+                        <h5>Marcus Thorne</h5>
+                        <span>Coffee Roasting Enthusiast</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-quote">
+                    "The Honey Lavender Oat Latte paired with the warm French butter croissant is my ritual every Friday morning. The team is warm and truly masters of their craft."
+                </p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Sophia Chen" class="author-avatar">
+                    <div class="author-info">
+                        <h5>Sophia Chen</h5>
+                        <span>Creative Director</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Visit Us / Contact Section -->
+<section class="section section-subtle" id="contact">
+    <div class="container">
+        <div class="detail-grid" style="margin: 0; align-items: center;">
+            <div>
+                <span class="section-tag">Visit Our Bar</span>
+                <h2 class="section-title" style="text-align: left; margin-bottom: 1rem;">Drop by or Say Hello</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6;">
+                    Whether you are planning a corporate catering event, curious about our bean origins, or just want barista advice on home brewing gear, our door is always open.
+                </p>
+                
+                <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                    <div style="display:flex; align-items:center; gap:1rem;">
+                        <span style="font-size:1.5rem;">📍</span>
+                        <div>
+                            <strong style="display:block; color:var(--primary);">Downtown Roastery & Espresso Bar</strong>
+                            <span style="color:var(--text-muted); font-size:0.9rem;">742 Evergreen Terrace, Arts District</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:1rem;">
+                        <span style="font-size:1.5rem;">⏰</span>
+                        <div>
+                            <strong style="display:block; color:var(--primary);">Hours of Operation</strong>
+                            <span style="color:var(--text-muted); font-size:0.9rem;">Monday - Sunday: 6:30 AM – 8:00 PM</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:1rem;">
+                        <span style="font-size:1.5rem;">💌</span>
+                        <div>
+                            <strong style="display:block; color:var(--primary);">Direct Inquiries</strong>
+                            <span style="color:var(--text-muted); font-size:0.9rem;">hello@thecoffeebar.local</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background:var(--surface); padding:2.5rem; border-radius:var(--radius-lg); border:1px solid var(--border); box-shadow:var(--shadow-md);">
+                <h3 style="font-family:var(--font-heading); font-size:1.5rem; color:var(--primary); margin-bottom:1.25rem;">Send Us a Message</h3>
+                <form method="post" action="{% url 'contact' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        {{ contact_form.name }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        {{ contact_form.email }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        {{ contact_form.subject }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        {{ contact_form.message }}
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Full Coffee Menu & Bakery | The Coffee Bar{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 3rem; padding-bottom: 5rem;">
+    <!-- Page Header -->
+    <div class="section-header" style="margin-bottom: 2.5rem;">
+        <span class="section-tag">Artisan Offerings</span>
+        <h1 class="section-title">Our Handcrafted Menu</h1>
+        <p class="section-desc">Ethically harvested single-origin lots, precision espresso extractions, and small-batch house bakery goods.</p>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div style="background: var(--surface); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 2.5rem;">
+        <form method="get" action="{% url 'menu' %}" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
+            <!-- Search Bar -->
+            <div style="flex: 1 1 300px; position: relative;">
+                <input type="text" name="q" value="{{ current_query }}" placeholder="Search by name, origin, tasting notes..." class="form-control" style="padding-left: 2.5rem;">
+                <span style="position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--text-light);">🔍</span>
+            </div>
+
+            <!-- Roast Filter -->
+            <div style="flex: 0 1 180px;">
+                <select name="roast" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Roast Levels</option>
+                    <option value="Light" {% if current_roast == 'Light' %}selected{% endif %}>Light Roast</option>
+                    <option value="Medium" {% if current_roast == 'Medium' %}selected{% endif %}>Medium Roast</option>
+                    <option value="Dark" {% if current_roast == 'Dark' %}selected{% endif %}>Dark Roast</option>
+                    <option value="Specialty" {% if current_roast == 'Specialty' %}selected{% endif %}>Specialty Brew</option>
+                </select>
+            </div>
+
+            <!-- Sort By -->
+            <div style="flex: 0 1 200px;">
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <option value="featured" {% if current_sort == 'featured' %}selected{% endif %}>Sort: Featured First</option>
+                    <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="rating" {% if current_sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+                    <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name (A to Z)</option>
+                </select>
+            </div>
+
+            {% if current_category %}
+                <input type="hidden" name="category" value="{{ current_category }}">
+            {% endif %}
+
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                {% if current_query or current_roast or current_category or current_sort != 'featured' %}
+                <a href="{% url 'menu' %}" class="btn btn-secondary btn-sm">Reset</a>
+                {% endif %}
+            </div>
+        </form>
+
+        <!-- Category Pills -->
+        <div class="category-bar" style="margin-top: 1.25rem; padding-bottom: 0;">
+            <a href="{% url 'menu' %}{% if current_roast %}?roast={{ current_roast }}{% endif %}" class="category-chip {% if not current_category %}active{% endif %}">
+                All Categories
+            </a>
+            {% for cat in categories %}
+            <a href="{% url 'menu' %}?category={{ cat.slug }}{% if current_roast %}&roast={{ current_roast }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="category-chip {% if current_category == cat.slug %}active{% endif %}">
+                <span>{{ cat.icon }}</span> {{ cat.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="coffee-grid">
+        {% for coffee in coffees %}
+        <div class="coffee-card">
+            <div class="coffee-card-media">
+                <img src="{{ coffee.display_image }}" alt="{{ coffee.name }}" class="coffee-card-img" loading="lazy">
+                {% if coffee.is_featured %}
+                    <span class="badge-pill badge-featured">★ Featured</span>
+                {% elif coffee.category %}
+                    <span class="badge-pill">{{ coffee.category.name }}</span>
+                {% endif %}
+                <span class="rating-badge">★ {{ coffee.rating }}</span>
+            </div>
+            <div class="coffee-card-body">
+                <h3 class="card-title">
+                    <a href="{% url 'coffee_detail' coffee.slug %}">{{ coffee.name }}</a>
+                </h3>
+                <p class="card-desc">{{ coffee.short_description|default:coffee.description }}</p>
+                
+                <div class="card-meta">
+                    <span class="card-meta-item">🌱 {{ coffee.origin }}</span>
+                    <span class="card-meta-item">🔥 {{ coffee.roast_level }}</span>
+                    <span class="card-meta-item">⚡ {{ coffee.calories }} kcal</span>
+                </div>
+
+                <div class="card-footer">
+                    <div class="card-price">
+                        ${{ coffee.price }}
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <a href="{% url 'coffee_detail' coffee.slug %}" class="btn btn-secondary btn-sm" title="View Details">Details</a>
+                        <a href="{% url 'order' coffee.pk %}" class="btn btn-primary btn-sm">Order</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; background: var(--surface); border-radius: var(--radius-md); border: 1px dashed var(--border);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">☕</div>
+            <h3 style="font-family: var(--font-heading); color: var(--primary); margin-bottom: 0.5rem;">No coffees match your filter</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Try adjusting your keywords or clearing the category and roast filters.</p>
+            <a href="{% url 'menu' %}" class="btn btn-primary">View Full Menu</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 3.5rem;">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_roast %}&roast={{ current_roast }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="btn btn-secondary btn-sm">← Previous</a>
+        {% endif %}
+
+        <span style="display: flex; align-items: center; padding: 0 1rem; font-weight: 600; color: var(--text-muted); font-size: 0.9rem;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_roast %}&roast={{ current_roast }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="btn btn-secondary btn-sm">Next →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

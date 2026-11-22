@@ -1,0 +1,15 @@
+[project]
+name = "coffee-shop"
+version = "1.0.0"
+description = "A modern, handcrafted artisan coffee shop and online ordering web application built with Django"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.2.0",
+    "pillow>=10.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

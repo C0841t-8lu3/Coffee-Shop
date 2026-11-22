@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ coffee.name }} | The Coffee Bar{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <!-- Breadcrumb -->
+    <div style="margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+        <a href="{% url 'home' %}">Home</a>
+        <span>›</span>
+        <a href="{% url 'menu' %}">Menu</a>
+        {% if coffee.category %}
+            <span>›</span>
+            <a href="{% url 'menu' %}?category={{ coffee.category.slug }}">{{ coffee.category.name }}</a>
+        {% endif %}
+        <span>›</span>
+        <strong style="color: var(--primary);">{{ coffee.name }}</strong>
+    </div>
+
+    <!-- Product Layout -->
+    <div class="detail-grid">
+        <!-- Visual Gallery Column -->
+        <div class="detail-gallery">
+            <img src="{{ coffee.display_image }}" alt="{{ coffee.name }}" class="detail-main-img">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem;">
+                <div style="background: var(--surface); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                    <div style="font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Roast Level</div>
+                    <strong style="color: var(--primary); font-size: 1rem;">{{ coffee.roast_level }}</strong>
+                </div>
+                <div style="background: var(--surface); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                    <div style="font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Caffeine</div>
+                    <strong style="color: var(--primary); font-size: 1rem;">{{ coffee.caffeine_level }}</strong>
+                </div>
+                <div style="background: var(--surface); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); text-align: center;">
+                    <div style="font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Energy</div>
+                    <strong style="color: var(--primary); font-size: 1rem;">{{ coffee.calories }} kcal</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description & Action Column -->
+        <div class="detail-content">
+            <div class="detail-header">
+                {% if coffee.category %}
+                    <span class="card-category">{{ coffee.category.name }}</span>
+                {% endif %}
+                <h1 class="detail-title">{{ coffee.name }}</h1>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="color: #f59e0b; font-weight: 700; font-size: 1rem;">
+                        ★ {{ coffee.rating }}
+                        <span style="color: var(--text-muted); font-weight: 400; font-size: 0.85rem;">({{ coffee.reviews_count }} verified reviews)</span>
+                    </div>
+                    <span style="color: var(--border);">|</span>
+                    <span style="color: var(--success); font-weight: 600; font-size: 0.9rem;">✓ In Stock & Freshly Brewed</span>
+                </div>
+                <div class="detail-price">
+                    ${{ coffee.price }}
+                </div>
+            </div>
+
+            <div class="detail-pills">
+                <span class="detail-pill">📍 Origin: {{ coffee.origin }}</span>
+                <span class="detail-pill">☕ Handcrafted Order</span>
+                <span class="detail-pill">🌿 100% Organic</span>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h4 style="font-family: var(--font-heading); color: var(--primary); font-size: 1.15rem; margin-bottom: 0.5rem;">Flavor Profile & Craft Notes</h4>
+                <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">
+                    {{ coffee.description }}
+                </p>
+            </div>
+
+            <!-- Quick Order Button -->
+            <div style="border-top: 1px solid var(--border); padding-top: 2rem; display: flex; gap: 1rem; align-items: center;">
+                <a href="{% url 'order' coffee.pk %}" class="btn btn-primary btn-lg" style="flex: 1;">
+                    Customize & Order Now →
+                </a>
+                <a href="{% url 'menu' %}" class="btn btn-secondary btn-lg">
+                    Back to Menu
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Coffees Section -->
+    {% if related_coffees %}
+    <div style="margin-top: 5rem; padding-top: 3rem; border-top: 1px solid var(--border);">
+        <h3 style="font-family: var(--font-heading); font-size: 1.75rem; color: var(--primary); margin-bottom: 2rem;">
+            You Might Also Enjoy
+        </h3>
+        <div class="coffee-grid">
+            {% for item in related_coffees %}
+            <div class="coffee-card">
+                <div class="coffee-card-media">
+                    <img src="{{ item.display_image }}" alt="{{ item.name }}" class="coffee-card-img" loading="lazy">
+                    <span class="rating-badge">★ {{ item.rating }}</span>
+                </div>
+                <div class="coffee-card-body">
+                    <h4 class="card-title">
+                        <a href="{% url 'coffee_detail' item.slug %}">{{ item.name }}</a>
+                    </h4>
+                    <p class="card-desc">{{ item.short_description|default:item.description }}</p>
+                    <div class="card-footer">
+                        <div class="card-price">${{ item.price }}</div>
+                        <a href="{% url 'order' item.pk %}" class="btn btn-primary btn-sm">Order</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
