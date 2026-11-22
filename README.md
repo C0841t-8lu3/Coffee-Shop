@@ -1,67 +1,50 @@
-# The Coffee Bar ☕
+<div align="center">
 
-A modern, full-featured artisan coffee shop and online ordering web application built with Django 5, vanilla JavaScript, and modern CSS.
+# ☕ The Coffee Bar
 
-Designed for micro-roasteries, specialty coffee bars, and cafes needing responsive ordering, customizer workflows, order status tracking, and administration.
+**A modern, full-stack artisan coffee shop & online ordering platform built with Django.**
 
----
+[![Django](https://img.shields.io/badge/Django-5.2%2B-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-amber?style=for-the-badge)](LICENSE)
+[![Tests: Passing](https://img.shields.io/badge/Tests-Passing-success?style=for-the-badge)](shop/tests.py)
 
-## Highlights & Features
+[Features](#-features) • [Quickstart](#-quickstart) • [Project Structure](#-project-structure) • [Running Tests](#-running-tests) • [License](#-license)
 
-- **Modern Responsive Design**: Custom CSS design system with warm coffee-toned aesthetics, glassmorphism headers, fluid typography, and mobile-friendly drawer navigation.
-- **Dynamic Drink Customizer**: Interactive ordering widget with instant client-side price recalculation across cup sizes, dairy/plant milk selections (oat, almond, soy), and sweetness levels.
-- **Catalog & Search**: Filter coffee offerings by category, roast profile (Light, Medium, Dark, Specialty), and keyword search.
-- **Order Tracking & Live Status**: Multi-step order status stepper (Received &rarr; Brewing &rarr; Quality Check &rarr; Ready for Pickup) with itemized digital receipts.
-- **User Authentication & History**: Customer registration, authentication, and a personal order history dashboard.
-- **Barista Administration**: Django admin integration with thumbnail image previews, order status tags, inline order items, and category management.
-- **Database Seeder**: Built-in management command to populate categories, descriptions, roast metrics, and menu items.
-- **Automated Test Suite**: Model and view test coverage with 100% passing tests.
+</div>
 
 ---
 
-## Tech Stack
+## 📖 Overview
+
+**The Coffee Bar** is a clean, responsive web application designed for specialty coffee roasteries and neighborhood cafes. It provides a complete workflow from browsing single-origin roasts to real-time custom drink orders, automated receipt generation, and a barista back-office portal.
+
+---
+
+## ✨ Features
+
+- **Responsive Artisan Design**: Handcrafted CSS design system inspired by specialty coffee culture, complete with glassmorphism navigation, warm typography, and smooth transitions.
+- **Dynamic Drink Customizer**: Live client-side price calculator factoring in cup sizing (8oz, 12oz, 16oz), plant milk upgrades (oat, almond, soy), and sweetness adjustments.
+- **Roast & Category Filtering**: Browse single-origin coffees and pastries filtered by roast profile (Light, Medium, Dark, Specialty) or keyword search.
+- **Live Order Tracker**: Visual order progress stepper (*Received &rarr; Brewing &rarr; Quality Check &rarr; Ready for Pickup*) with itemized digital receipts.
+- **User Accounts & Order History**: Authentication flow for guests to create accounts, sign in, and view past orders.
+- **Barista Admin Dashboard**: Django admin integration with drink thumbnail previews, order status badges, and inline item tracking.
+- **Instant Demo Seeder**: Includes `python manage.py seed_data` to automatically populate realistic artisan coffee data and categories.
+- **Fully Tested**: Comprehensive unit test suite covering models, ordering calculations, forms, and views.
+
+---
+
+## 🛠️ Tech Stack
 
 - **Backend**: Python 3.12+, Django 5 / 6
-- **Frontend**: Modern Semantic HTML5, CSS3 Custom Properties (Design System), Vanilla JavaScript (ES6+)
-- **Database**: SQLite (Development) / PostgreSQL-ready
-- **Media & Images**: Pillow (ImageField support)
-- **Environment Management**: python-dotenv
+- **Frontend**: Semantic HTML5, CSS3 Custom Properties, Vanilla JavaScript (ES6+)
+- **Database**: SQLite (local development) / PostgreSQL-compatible
+- **Image Processing**: Pillow
+- **Configuration**: python-dotenv
 
 ---
 
-## Project Structure
-
-```text
-Coffee-Shop/
-├── config/                  # Django project configuration & settings
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── shop/                    # Primary application package
-│   ├── management/commands/ # Custom CLI tools (e.g. seed_data)
-│   ├── migrations/          # Schema migrations
-│   ├── templates/shop/      # Modern templates (home, menu, order, auth)
-│   ├── admin.py             # Admin panel customizations
-│   ├── forms.py             # Form definitions with validation
-│   ├── models.py            # Category, Coffees, Order, OrderItem models
-│   ├── tests.py             # Test suite
-│   ├── urls.py              # URL routing
-│   └── views.py             # View controllers
-├── static/                  # Static assets
-│   ├── css/styles.css       # Design system and layout styles
-│   └── js/main.js           # Interactive UI and live price calculation
-├── templates/               # Global templates
-│   └── base.html            # Core HTML boilerplate with navigation and footer
-├── .env.example             # Sample environment variables
-├── .gitignore               # Clean git exclusions
-├── manage.py
-├── pyproject.toml
-└── requirements.txt
-```
-
----
-
-## Getting Started
+## 🚀 Quickstart
 
 ### 1. Clone the repository
 
@@ -70,7 +53,7 @@ git clone https://github.com/C0841t-8lu3/Coffee-Shop.git
 cd Coffee-Shop
 ```
 
-### 2. Create and activate a virtual environment
+### 2. Set up a virtual environment
 
 Using `venv`:
 ```bash
@@ -90,40 +73,66 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment variables (optional)
+### 4. Setup environment variables (optional)
 
 ```bash
 cp .env.example .env
 ```
 
-### 5. Run migrations & seed demo data
+### 5. Run migrations & seed data
 
 ```bash
 python manage.py migrate
 python manage.py seed_data
 ```
 
-### 6. Create superuser (optional)
+*(This seeds categories and creates a demo staff account: `barista` / `BaristaPass123!`)*
 
-```bash
-python manage.py createsuperuser
-```
-
-*(Note: `python manage.py seed_data` already sets up a demo staff user: username `barista`, password `BaristaPass123!`)*
-
-### 7. Run development server
+### 6. Start the development server
 
 ```bash
 python manage.py runserver
 ```
 
-Open your browser at `http://127.0.0.1:8000/`.
+Visit [`http://127.0.0.1:8000`](http://127.0.0.1:8000) in your browser.
 
 ---
 
-## Running Tests
+## 📁 Project Structure
 
-Run the automated test suite with:
+```text
+Coffee-Shop/
+├── config/                  # Django project configuration & settings
+│   ├── settings.py          # Environment-aware settings
+│   ├── urls.py              # Root routing & static file serving
+│   └── wsgi.py
+├── shop/                    # Core shop application
+│   ├── management/commands/ # Custom CLI commands (seed_data)
+│   ├── migrations/          # Database migrations
+│   ├── templates/shop/      # Shop views (home, menu, customizer, orders)
+│   ├── admin.py             # Admin panel customizations
+│   ├── forms.py             # Order & contact forms with validation
+│   ├── models.py            # Coffees, Category, Order, OrderItem
+│   ├── tests.py             # 11 unit tests covering all features
+│   ├── urls.py              # Shop route definitions
+│   └── views.py             # Class-based and function views
+├── static/                  # Static assets
+│   ├── css/styles.css       # Complete CSS design system
+│   └── js/main.js           # Client-side price math and animations
+├── templates/               # Global layout templates
+│   └── base.html            # Shared base template
+├── .env.example
+├── .gitignore
+├── manage.py
+├── pyproject.toml
+└── requirements.txt
+```
+
+---
+
+## 🧪 Running Tests
+
+Run the test suite with Django's test runner:
 
 ```bash
 python manage.py test
@@ -131,6 +140,6 @@ python manage.py test
 
 ---
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License.
+Distributed under the MIT License. See `LICENSE` for details.
