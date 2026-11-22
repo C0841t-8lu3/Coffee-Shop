@@ -2,7 +2,7 @@ from decimal import Decimal
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views import View
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login, logout
 from django.contrib import messages
@@ -85,7 +85,6 @@ class CoffeeDetailPage(DetailView):
             category=coffee.category,
             is_available=True
         ).exclude(id=coffee.id)[:3]
-        context['order_form'] = QuickOrderForm()
         return context
 
 
